@@ -33,7 +33,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.nio.channels.ShutdownChannelGroupException;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -46,7 +45,7 @@ public class MenjacnicaGUI extends JFrame {
 	private JButton btnDodajKurs;
 	private JButton btnIzbrisiKurs;
 	private JButton btnIzvrsiIzmenu;
-	private JTextArea textAreaStatus;
+	static JTextArea textAreaStatus;
 	private JMenuBar menuBar;
 	private JMenu mnFile;
 	private JMenu mnHelp;
@@ -54,7 +53,7 @@ public class MenjacnicaGUI extends JFrame {
 	private JMenuItem mntmSave;
 	private JMenuItem mntmExit;
 	private JMenuItem mntmAbout;
-	private JTable table;
+	public static JTable table;
 	private JPopupMenu popupMenu;
 	private JMenuItem mntmDodajKurs;
 	private JMenuItem mntmIzbrisiKurs;
@@ -134,6 +133,11 @@ public class MenjacnicaGUI extends JFrame {
 	private JButton getBtnDodajKurs() {
 		if (btnDodajKurs == null) {
 			btnDodajKurs = new JButton("Dodaj kurs");
+			btnDodajKurs.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					otvoriDodajKurs();
+				}
+			});
 		}
 		return btnDodajKurs;
 	}
@@ -259,16 +263,22 @@ public class MenjacnicaGUI extends JFrame {
 	private JTable getTable() {
 		if (table == null) {
 			table = new JTable();
+			table.setShowGrid(false);
 			table.setFillsViewportHeight(true);
-			table.setModel(new DefaultTableModel(new Object[][] {},
-					new String[] { "Sifra", "Skraceni naziv", "Prodajni", "Srednji", "Kupovni", "Naziv" }));
-			addPopup(table, getPopupMenu());
+			table.setModel(new DefaultTableModel(
+				new Object[][] {
+				},
+				new String[] {
+					"Sifra", "Skraceni naziv", "Prodajni", "Srednji", "Kupovni", "Naziv"
+				}
+			));
 			table.getColumnModel().getColumn(0).setPreferredWidth(36);
 			table.getColumnModel().getColumn(1).setPreferredWidth(85);
 			table.getColumnModel().getColumn(2).setPreferredWidth(54);
 			table.getColumnModel().getColumn(3).setPreferredWidth(48);
 			table.getColumnModel().getColumn(4).setPreferredWidth(54);
 			table.getColumnModel().getColumn(5).setPreferredWidth(41);
+			addPopup(table, getPopupMenu());
 		}
 		return table;
 	}
@@ -306,6 +316,11 @@ public class MenjacnicaGUI extends JFrame {
 	private JMenuItem getMntmDodajKurs() {
 		if (mntmDodajKurs == null) {
 			mntmDodajKurs = new JMenuItem("Dodaj kurs");
+			mntmDodajKurs.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					otvoriDodajKurs();
+				}
+			});
 		}
 		return mntmDodajKurs;
 	}
@@ -327,6 +342,17 @@ public class MenjacnicaGUI extends JFrame {
 		int opcija = JOptionPane.showConfirmDialog(null, "Da li zelite da izadjete iz programa?", "Zatvaranje", JOptionPane.YES_NO_CANCEL_OPTION);
 		if(opcija == JOptionPane.YES_OPTION)
 			System.exit(0);
+	}
+	public void otvoriDodajKurs(){
+		DodajKursGUI dkg = new DodajKursGUI();
+		dkg.setVisible(true);
+	}
+	public static void napisiKursNaStatus(int sifra, String naziv, double prodajni, double kupovni, double srednji, String skraceniNaziv){
+		textAreaStatus.append("Sifra: " +sifra+ " Naziv: " +naziv+ " Skraceni naziv: " +skraceniNaziv+ " Prodajni kurs: " +prodajni+ " Kupovni kurs: " +kupovni+ " Srednji: " +srednji+"\n");
+	}
+	public static void dodajKursUTabelu(int sifra, String naziv, double prodajni, double kupovni, double srednji, String skraceniNaziv){
+		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		model.addRow(new Object[]{sifra, naziv, prodajni, kupovni, srednji, skraceniNaziv});
 	}
 }
 
