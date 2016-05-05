@@ -178,6 +178,12 @@ public class MenjacnicaGUI extends JFrame {
 	private JButton getBtnIzvrsiIzmenu() {
 		if (btnIzvrsiIzmenu == null) {
 			btnIzvrsiIzmenu = new JButton("Izvrsi izmenu");
+			btnIzvrsiIzmenu.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					IzvrsiZamenuGUI izg = new IzvrsiZamenuGUI();
+					izg.setVisible(true);
+				}
+			});
 		}
 		return btnIzvrsiIzmenu;
 	}
@@ -350,6 +356,32 @@ public class MenjacnicaGUI extends JFrame {
 	private JMenuItem getMntmIzbrisiKurs() {
 		if (mntmIzbrisiKurs == null) {
 			mntmIzbrisiKurs = new JMenuItem("Izbrisi kurs");
+			mntmIzbrisiKurs.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						int red = table.getSelectedRow();
+						if (red != -1) {
+							int opcija = JOptionPane.showConfirmDialog(null,
+									"Da li ste sigurni da zelite da obrisete " + (red + 1) + ". red?", "Zatvaranje",
+									JOptionPane.YES_NO_OPTION);
+							if (opcija == JOptionPane.YES_OPTION) {
+
+								DefaultTableModel model = (DefaultTableModel) table.getModel();
+								model.removeRow(red);
+								JOptionPane.showMessageDialog(null, "Red je uspesno obrisan!", "", JOptionPane.OK_OPTION);
+								textAreaStatus.append("Izbrisan je " + (red + 1) + ". red!\n");
+							}
+
+						} else {
+							JOptionPane.showMessageDialog(null, "Morate odabrati red pre brisanja!", "Greska",
+									JOptionPane.OK_OPTION);
+						}
+					} catch (HeadlessException e1) {
+					JOptionPane.showMessageDialog(null, "Doslo je do greske prilikom brisanja kursa!", "", JOptionPane.OK_OPTION);
+					}
+
+				}
+			});
 		}
 		return mntmIzbrisiKurs;
 	}
@@ -357,6 +389,12 @@ public class MenjacnicaGUI extends JFrame {
 	private JMenuItem getMntmIzvrsiIzmenu() {
 		if (mntmIzvrsiIzmenu == null) {
 			mntmIzvrsiIzmenu = new JMenuItem("Izvrsi izmenu");
+			mntmIzvrsiIzmenu.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					IzvrsiZamenuGUI izg = new IzvrsiZamenuGUI();
+					izg.setVisible(true);
+				}
+			});
 		}
 		return mntmIzvrsiIzmenu;
 	}
