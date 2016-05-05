@@ -2,6 +2,7 @@ package menjacnica.gui;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.HeadlessException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -75,18 +76,16 @@ public class MenjacnicaGUI extends JFrame {
 		});
 	}
 
-
-
 	/**
 	 * Create the frame.
 	 */
 	public MenjacnicaGUI() {
-		addWindowListener(new WindowAdapter() {		
+		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				ugasiAplikaciju();
 			}
-		});		
+		});
 		setIconImage(Toolkit.getDefaultToolkit().getImage(MenjacnicaGUI.class.getResource("/icons/payment-512.png")));
 		setTitle("Menjacnica");
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -145,6 +144,33 @@ public class MenjacnicaGUI extends JFrame {
 	private JButton getBtnIzbrisiKurs() {
 		if (btnIzbrisiKurs == null) {
 			btnIzbrisiKurs = new JButton("Izbrisi kurs");
+			btnIzbrisiKurs.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+
+					try {
+						int red = table.getSelectedRow();
+						if (red != -1) {
+							int opcija = JOptionPane.showConfirmDialog(null,
+									"Da li ste sigurni da zelite da obrisete " + (red + 1) + ". red?", "Zatvaranje",
+									JOptionPane.YES_NO_OPTION);
+							if (opcija == JOptionPane.YES_OPTION) {
+
+								DefaultTableModel model = (DefaultTableModel) table.getModel();
+								model.removeRow(red);
+								JOptionPane.showMessageDialog(null, "Red je uspesno obrisan!", "", JOptionPane.OK_OPTION);
+								textAreaStatus.append("Izbrisan je " + (red + 1) + ". red!\n");
+							}
+
+						} else {
+							JOptionPane.showMessageDialog(null, "Morate odabrati red pre brisanja!", "Greska",
+									JOptionPane.OK_OPTION);
+						}
+					} catch (HeadlessException e) {
+					JOptionPane.showMessageDialog(null, "Doslo je do greske prilikom brisanja kursa!", "", JOptionPane.OK_OPTION);
+					}
+
+				}
+			});
 		}
 		return btnIzbrisiKurs;
 	}
@@ -241,11 +267,11 @@ public class MenjacnicaGUI extends JFrame {
 				public void actionPerformed(ActionEvent e) {
 					ugasiAplikaciju();
 				}
-			}
-					);
-			mntmExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,InputEvent.CTRL_MASK));
+			});
+			mntmExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_MASK));
 
-		}return mntmExit;
+		}
+		return mntmExit;
 	}
 
 	private JMenuItem getMntmAbout() {
@@ -253,7 +279,8 @@ public class MenjacnicaGUI extends JFrame {
 			mntmAbout = new JMenuItem("About");
 			mntmAbout.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					JOptionPane.showMessageDialog(null, "Mladen Lukic 257/14, student Fakulteta organizacionih nauka u Beogradu.");
+					JOptionPane.showMessageDialog(null,
+							"Mladen Lukic 257/14, student Fakulteta organizacionih nauka u Beogradu.");
 				}
 			});
 		}
@@ -265,13 +292,8 @@ public class MenjacnicaGUI extends JFrame {
 			table = new JTable();
 			table.setShowGrid(false);
 			table.setFillsViewportHeight(true);
-			table.setModel(new DefaultTableModel(
-				new Object[][] {
-				},
-				new String[] {
-					"Sifra", "Skraceni naziv", "Prodajni", "Srednji", "Kupovni", "Naziv"
-				}
-			));
+			table.setModel(new DefaultTableModel(new Object[][] {},
+					new String[] { "Sifra", "Skraceni naziv", "Prodajni", "Srednji", "Kupovni", "Naziv" }));
 			table.getColumnModel().getColumn(0).setPreferredWidth(36);
 			table.getColumnModel().getColumn(1).setPreferredWidth(85);
 			table.getColumnModel().getColumn(2).setPreferredWidth(54);
@@ -338,21 +360,28 @@ public class MenjacnicaGUI extends JFrame {
 		}
 		return mntmIzvrsiIzmenu;
 	}
+
 	public static void ugasiAplikaciju() {
-		int opcija = JOptionPane.showConfirmDialog(null, "Da li zelite da izadjete iz programa?", "Zatvaranje", JOptionPane.YES_NO_CANCEL_OPTION);
-		if(opcija == JOptionPane.YES_OPTION)
+		int opcija = JOptionPane.showConfirmDialog(null, "Da li zelite da izadjete iz programa?", "Zatvaranje",
+				JOptionPane.YES_NO_OPTION);
+		if (opcija == JOptionPane.YES_OPTION)
 			System.exit(0);
 	}
-	public void otvoriDodajKurs(){
+
+	public void otvoriDodajKurs() {
 		DodajKursGUI dkg = new DodajKursGUI();
 		dkg.setVisible(true);
 	}
-	public static void napisiKursNaStatus(int sifra, String naziv, double prodajni, double kupovni, double srednji, String skraceniNaziv){
-		textAreaStatus.append("Sifra: " +sifra+ " Naziv: " +naziv+ " Skraceni naziv: " +skraceniNaziv+ " Prodajni kurs: " +prodajni+ " Kupovni kurs: " +kupovni+ " Srednji: " +srednji+"\n");
+
+	public static void napisiKursNaStatus(int sifra, String naziv, double prodajni, double kupovni, double srednji,
+			String skraceniNaziv) {
+		textAreaStatus.append("Sifra: " + sifra + " Naziv: " + naziv + " Skraceni naziv: " + skraceniNaziv
+				+ " Prodajni kurs: " + prodajni + " Kupovni kurs: " + kupovni + " Srednji: " + srednji + "\n");
 	}
-	public static void dodajKursUTabelu(int sifra, String naziv, double prodajni, double kupovni, double srednji, String skraceniNaziv){
+
+	public static void dodajKursUTabelu(int sifra, String naziv, double prodajni, double kupovni, double srednji,
+			String skraceniNaziv) {
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
-		model.addRow(new Object[]{sifra, naziv, prodajni, kupovni, srednji, skraceniNaziv});
+		model.addRow(new Object[] { sifra, naziv, prodajni, kupovni, srednji, skraceniNaziv });
 	}
 }
-

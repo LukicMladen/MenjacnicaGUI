@@ -9,6 +9,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.GridLayout;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.Rectangle;
@@ -164,7 +165,12 @@ public class DodajKursGUI extends JFrame {
 						MenjacnicaGUI.napisiKursNaStatus(sifra, naziv, prodajni, kupovni, srednji, skraceniNaziv);
 						MenjacnicaGUI.dodajKursUTabelu(sifra, naziv, prodajni, kupovni, srednji, skraceniNaziv);
 					} catch (NumberFormatException e1) {
-						System.out.println(e1.getMessage());
+						textFieldSifra.setText("");
+						textFieldProdajni.setText("");
+						textFieldSrednji.setText("");
+						textFieldKupovni.setText("");
+						JOptionPane.showMessageDialog(null, "Doslo je do greske pri unosu kursa!", "", JOptionPane.OK_OPTION);
+						MenjacnicaGUI.textAreaStatus.append("Doslo je do greske pri unosu kursa: "+e1.getMessage());
 					}
 					
 				}
